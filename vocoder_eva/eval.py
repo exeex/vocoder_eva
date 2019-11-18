@@ -57,7 +57,7 @@ def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe'):
         f0_s = pysptk.sptk.rapt(x_s.astype(np.double), sr, hopsize=128)
     else:
         raise ValueError('no such f0 exract method')
-    # TODO: remove unvoiced frame, frame_len
+    # TODO: frame_len
     # print(f0_r, f0_s)
     f0_r_unv = (f0_r == 0) * 1
     f0_s_unv = (f0_s == 0) * 1
