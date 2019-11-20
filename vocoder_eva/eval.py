@@ -42,11 +42,11 @@ def eval_MCD(x_r, x_s):
 
 def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe'):
     if method == 'harvest':
-        f0_r, t = pw.harvest(x_r.astype(np.double), sr, frame_period=100)
-        f0_s, t = pw.harvest(x_s.astype(np.double), sr, frame_period=100)
+        f0_r, t = pw.harvest(x_r.astype(np.double), sr, frame_period=50)
+        f0_s, t = pw.harvest(x_s.astype(np.double), sr, frame_period=50)
     elif method == 'dio':
-        f0_r, t = pw.dio(x_r.astype(np.double), sr, frame_period=100)
-        f0_s, t = pw.dio(x_s.astype(np.double), sr, frame_period=100)
+        f0_r, t = pw.dio(x_r.astype(np.double), sr, frame_period=50)
+        f0_s, t = pw.dio(x_s.astype(np.double), sr, frame_period=50)
     elif method == 'swipe':
         f0_r = pysptk.sptk.swipe(x_r.astype(np.double), sr, hopsize=128)
         f0_s = pysptk.sptk.swipe(x_s.astype(np.double), sr, hopsize=128)

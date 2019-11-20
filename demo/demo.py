@@ -35,7 +35,7 @@ class EvaDataset:
 
 if __name__ == '__main__':
     r_folder = '../data/ground_truth'
-    s_folder = '../data/repeat1_no_pulse'
+    s_folder = '../data/repeat1_pulse'
 
     d = EvaDataset(r_folder, s_folder)
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     vuv_precision_list = []
 
     for aud_r, aud_s, sr in d:
-        f0_rmse_mean, vuv_precision = eval_rmse_f0(aud_r, aud_s, sr)
+        f0_rmse_mean, vuv_precision = eval_rmse_f0(aud_r, aud_s, sr, method='dio')
         print(f0_rmse_mean, vuv_precision)
         f0_rmse_list.append(f0_rmse_mean)
         vuv_precision_list.append(vuv_precision)
