@@ -63,7 +63,7 @@ def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe'):
 
     voiced_mask = (1 - f0_r_unv) * (1 - f0_s_unv)
 
-    print(f0_r.shape, f0_s.shape)
+    # print(f0_r.shape, f0_s.shape)
 
     y = 1200 * np.abs(np.log2(f0_r + f0_r_unv) - np.log2(f0_s + f0_s_unv))
     y = y * (1 - f0_r_unv) * (1 - f0_s_unv)

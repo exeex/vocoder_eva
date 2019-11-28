@@ -33,22 +33,32 @@ class EvaDataset:
         return aud_r, aud_s, sr_r
 
 
-if __name__ == '__main__':
-    r_folder = '../data/ground_truth'
-    s_folder = '../data/repeat1_pulse'
-
-    d = EvaDataset(r_folder, s_folder)
-
+def evaluate_f0(dataset: EvaDataset):
     f0_rmse_list = []
     vuv_precision_list = []
 
-    for aud_r, aud_s, sr in d:
+    for aud_r, aud_s, sr in dataset:
         f0_rmse_mean, vuv_precision = eval_rmse_f0(aud_r, aud_s, sr, method='dio')
-        print(f0_rmse_mean, vuv_precision)
+        # print(f0_rmse_mean, vuv_precision)
         f0_rmse_list.append(f0_rmse_mean)
         vuv_precision_list.append(vuv_precision)
 
-    avg_f0_rmse = sum(f0_rmse_list) / len(d)
-    avg_vuv_precision = sum(vuv_precision_list) / len(d)
+    avg_f0_rmse = sum(f0_rmse_list) / len(dataset)
+    avg_vuv_precision = sum(vuv_precision_list) / len(dataset)
 
     print('avg_f0_rmse:', avg_f0_rmse, 'avg_vuv_precision:', avg_vuv_precision)
+
+
+if __name__ == '__main__':
+    # r: raw, s: synthesised
+    r_folder = 'exmaple_data/ground_truth'
+    s_folder_1 = 'exmaple_data/no_pulse'
+    s_folder_2 = 'exmaple_data/pulse'
+
+    d1 = EvaDataset(r_folder, s_folder_1)
+    d2 = EvaDataset(r_folder, s_folder_2)
+
+    print('## case : no pulse ##')
+    evaluate_f0(d1)
+    print('## case : pulse ##')
+    evaluate_f0(d2)
