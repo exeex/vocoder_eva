@@ -28,8 +28,8 @@ python setup.py develop
 from vocoder_eva.eval import eval_rmse_f0
 import librosa
 
-file_raw = 'demo/exmaple_data/ground_truth/arctic_b0436.wav'
-file_syn = 'demo/exmaple_data/no_pulse/arctic_b0436.wav'
+file_r = 'demo/exmaple_data/ground_truth/arctic_b0436.wav'
+file_s = 'demo/exmaple_data/no_pulse/arctic_b0436.wav'
 
 aud_r, sr_r = librosa.load(file_raw, sr=None)
 aud_s, sr_s = librosa.load(file_syn, sr=None)
