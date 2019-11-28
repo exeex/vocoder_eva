@@ -1,7 +1,7 @@
 import librosa
 import numpy as np
 import pyworld as pw
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import pysptk
 
 ln10_inv = 1 / np.log(10)
