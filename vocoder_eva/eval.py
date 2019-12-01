@@ -41,7 +41,7 @@ def eval_MCD(x_r, x_s):
     return 10 * ln10_inv * (temp ** 0.5)
 
 
-def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe'):
+def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe', tone_shift=None):
     # TODO: 要可以改動 frame len (ms) 或者 hop_size
     if method == 'harvest':
         f0_r, t = pw.harvest(x_r.astype(np.double), sr, frame_period=50)
@@ -71,6 +71,10 @@ def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe'):
     tn_mask = f0_r_uv * f0_s_uv
     fp_mask = f0_r_uv * f0_s_v
     fn_mask = f0_r_v * f0_s_uv
+
+    if tone_shift is not None:
+        shift_scale = 2 ** (tone_shift / 12)
+        f0_r = f0_r * shift_scale
 
     # only calculate f0 error for voiced frame
     y = 1200 * np.abs(np.log2(f0_r + f0_r_uv) - np.log2(f0_s + f0_s_uv))
