@@ -79,6 +79,7 @@ def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe', tone_shift=None):
     # only calculate f0 error for voiced frame
     y = 1200 * np.abs(np.log2(f0_r + f0_r_uv) - np.log2(f0_s + f0_s_uv))
     y = y * tp_mask
+    # print(y.sum(), tp_mask.sum())
     f0_rmse_mean = y.sum() / tp_mask.sum()
 
     # only voiced/ unvoiced accuracy/precision

@@ -11,7 +11,12 @@ class EvaDataset:
         self.r_files = {Path(y).stem: Path(y) for x in os.walk(raw_folder) for y in glob(os.path.join(x[0], '*.wav'))}
         self.s_files = {Path(y).stem: Path(y) for x in os.walk(syn_folder) for y in glob(os.path.join(x[0], '*.wav'))}
 
-        assert len(self.r_files) == len(self.r_files)
+        self.s_files = {file_name: file_path for file_name, file_path in self.s_files.items() if
+                        file_name.find('-') == -1}
+        self.s_files = {file_name: file_path for file_name, file_path in self.s_files.items() if
+                        file_name.find('+') == -1}
+
+        assert len(self.r_files) == len(self.s_files)
 
         self.file_names = set(self.r_files.keys()).union(set(self.s_files.keys()))
         self.file_names = list(self.file_names)
@@ -33,12 +38,12 @@ class EvaDataset:
         return aud_r, aud_s, sr_r
 
 
-def evaluate_f0(dataset: EvaDataset):
+def evaluate_f0(dataset: EvaDataset, tone_shift=0):
     f0_rmse_list = []
     vuv_precision_list = []
 
     for aud_r, aud_s, sr in dataset:
-        f0_rmse_mean, vuv_precision = eval_rmse_f0(aud_r, aud_s, sr, method='dio')
+        f0_rmse_mean, vuv_accuracy, vuv_precision = eval_rmse_f0(aud_r, aud_s, sr, method='dio', tone_shift=tone_shift)
         # print(f0_rmse_mean, vuv_precision)
         f0_rmse_list.append(f0_rmse_mean)
         vuv_precision_list.append(vuv_precision)
@@ -51,14 +56,28 @@ def evaluate_f0(dataset: EvaDataset):
 
 if __name__ == '__main__':
     # r: raw, s: synthesised
-    r_folder = 'exmaple_data/ground_truth'
-    s_folder_1 = 'exmaple_data/no_pulse'
-    s_folder_2 = 'exmaple_data/pulse'
+    r_folder = '../data/ground_truth'
+    s_folder_3 = '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1'
 
-    d1 = EvaDataset(r_folder, s_folder_1)
-    d2 = EvaDataset(r_folder, s_folder_2)
+    n0 = EvaDataset(r_folder, '../data/repeat1_no_pulse/repeat1_no_pulse')
+    np1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1-1')
+    nn1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1')
 
-    print('## case : no pulse ##')
-    evaluate_f0(d1)
-    print('## case : pulse ##')
-    evaluate_f0(d2)
+    p0 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse12280')
+    pp1 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse1228-1')
+    pn1 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse1228+1')
+
+    # print('## case : no pulse ##')
+    # evaluate_f0(n0)
+    # print('## case : pulse ##')
+    # evaluate_f0(p0)
+
+    print('## case : no pulse -1 ##')
+    evaluate_f0(nn1, tone_shift=-1)
+    print('## case : pulse -1##')
+    evaluate_f0(pn1, tone_shift=-1)
+
+    print('## case : no pulse +1 ##')
+    evaluate_f0(np1, tone_shift=+1)
+    print('## case : pulse +1##')
+    evaluate_f0(pp1, tone_shift=+1)
