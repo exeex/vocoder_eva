@@ -1,7 +1,7 @@
 import librosa
 import numpy as np
 import pyworld as pw
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import pysptk
 
 ln10_inv = 1 / np.log(10)
@@ -39,6 +39,14 @@ def eval_MCD(x_r, x_s):
     temp = 2 * np.sum((c_r - c_s) ** 2, axis=0)
     # print(temp)
     return 10 * ln10_inv * (temp ** 0.5)
+
+
+def plot_f0(*files):
+    for file in files:
+        aud, sr = librosa.load(file, sr=None)
+        f0 = pysptk.sptk.swipe(aud.astype(np.double), sr, hopsize=128)
+        plt.plot(f0)
+    plt.show()
 
 
 def eval_rmse_f0(x_r, x_s, sr, frame_len='5', method='swipe', tone_shift=None):

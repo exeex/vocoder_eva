@@ -1,4 +1,0 @@
-## case : no pulse ##
-avg_f0_rmse: 34.893004936106706 avg_vuv_precision: 0.8823255409568572
-## case : pulse ##
-avg_f0_rmse: 232.69459921835858 avg_vuv_precision: 0.8189642352209705
