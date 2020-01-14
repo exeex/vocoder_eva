@@ -63,9 +63,9 @@ if __name__ == '__main__':
     np1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1-1')
     nn1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1')
 
-    p0 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse12280')
-    pp1 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse1228-1')
-    pn1 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse1228+1')
+    p0 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_01130')
+    pp1 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_01131')
+    pn1 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_0113-1')
 
     # print('## case : no pulse ##')
     # evaluate_f0(n0)
@@ -87,19 +87,29 @@ if __name__ == '__main__':
     files = [n0.r_files[file_name],
              n0.s_files[file_name],
              nn1.s_files[file_name],
-             pn1.s_files[file_name],
+             # pn1.s_files[file_name],
              ]
 
     files2 = [
-             nn1.s_files[file_name],
-             pn1.s_files[file_name],
-             ]
+        nn1.s_files[file_name],
+        # pn1.s_files[file_name],
+    ]
 
-    files3 = [
-             nn1.r_files[file_name],
-             nn1.s_files[file_name],
-             ]
+    # nagoya baseline
+    # files3 = [
+    #     (n0.r_files[file_name], 'ground truth'),
+    #     (n0.s_files[file_name], 'no shift'),
+    #     (nn1.s_files[file_name], '+1 semitone'),
+    #     (np1.s_files[file_name], '-1 semitone'),
+    # ]
+    # plot_f0(*files3, title='f0 curve : [Nagoya baseline wavenet]')
+
+    files4 = [
+        (p0.r_files[file_name], 'ground truth'),
+        (p0.s_files[file_name], 'no shift'),
+        (pp1.s_files[file_name], '+1 semitone'),
+        (pn1.s_files[file_name], '-1 semitone')
+    ]
+    plot_f0(*files4, title='f0 curve : [F0-editable 7x2 layer 01/14]')
 
     # plot_f0(*files)
-
-    plot_f0(*files3)

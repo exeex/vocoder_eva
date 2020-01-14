@@ -60,24 +60,24 @@ if __name__ == '__main__':
     s_folder_3 = '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1'
 
     n0 = EvaDataset(r_folder, '../data/repeat1_no_pulse/repeat1_no_pulse')
-    np1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1-1')
-    nn1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1')
+    # np1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1-1')
+    # nn1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1')
 
-    p0 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse12280')
-    pp1 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse1228-1')
-    pn1 = EvaDataset(r_folder, '../data/repeat1_pulse_1228/eva_out_pulse1228+1')
+    p0 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_01130')
+    pp1 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_01131')
+    pn1 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_0113-1')
 
     # print('## case : no pulse ##')
     # evaluate_f0(n0)
     # print('## case : pulse ##')
     # evaluate_f0(p0)
 
-    print('## case : no pulse -1 ##')
-    evaluate_f0(nn1, tone_shift=-1)
-    print('## case : pulse -1##')
-    evaluate_f0(pn1, tone_shift=-1)
-
-    print('## case : no pulse +1 ##')
-    evaluate_f0(np1, tone_shift=+1)
+    # print('## case : no pulse -1 ##')
+    # evaluate_f0(nn1, tone_shift=-1)
+    # print('## case : pulse -1##')
+    # evaluate_f0(pn1, tone_shift=-1)
+    #
+    # print('## case : no pulse +1 ##')
+    # evaluate_f0(np1, tone_shift=+1)
     print('## case : pulse +1##')
-    evaluate_f0(pp1, tone_shift=+1)
+    evaluate_f0(pp1, tone_shift=1)

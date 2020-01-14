@@ -41,11 +41,24 @@ def eval_MCD(x_r, x_s):
     return 10 * ln10_inv * (temp ** 0.5)
 
 
-def plot_f0(*files):
+def plot_f0(*files, title=None):
     for file in files:
-        aud, sr = librosa.load(file, sr=None)
+
+        if isinstance(file, tuple):
+            file_path, label = file
+        else:
+            file_path = file
+            label = None
+
+        aud, sr = librosa.load(file_path, sr=None)
         f0 = pysptk.sptk.swipe(aud.astype(np.double), sr, hopsize=128)
-        plt.plot(f0)
+        plt.plot(f0, label=label)
+
+    plt.ylabel('f0(Hz)')
+    plt.xlabel('frame')
+    if title:
+        plt.title(title)
+    plt.legend(loc='upper right')
     plt.show()
 
 
