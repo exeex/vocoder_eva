@@ -30,6 +30,11 @@ class WavDataset:
                       file_name.find(match_string) != -1}
         return self
 
+    def replace_key(self, match_string, replace_str):
+        self.files = {file_name.replace(match_string, replace_str): file_path for file_name, file_path in self.files.items()}
+        return self
+
+
     def __len__(self):
         return len(self.file_names)
 
@@ -84,21 +89,36 @@ if __name__ == '__main__':
     bs_1 = WavDataset('../data/repeat1_no_pulse/semi_tone_shift_repeat1-1')
     bs_n1 = WavDataset('../data/repeat1_no_pulse/semi_tone_shift_repeat1+1')
 
-    pu_0 = WavDataset('../data/out_shifts0113/repeat2_7layer_01130').without_str('-').without_str('+')
-    pu_1 = WavDataset('../data/out_shifts0113/repeat2_7layer_01131').without_str('-').without_str('+')
-    pu_n1 = WavDataset('../data/out_shifts0113/repeat2_7layer_0113-1').without_str('-').without_str('+')
+    # pu_0 = WavDataset('../data/out_shifts0113/repeat2_7layer_01130').without_str('-').without_str('+')
+    # pu_1 = WavDataset('../data/out_shifts0113/repeat2_7layer_01131').without_str('-').without_str('+')
+    # pu_n1 = WavDataset('../data/out_shifts0113/repeat2_7layer_0113-1').without_str('-').without_str('+')
 
-    # print('## case : no pulse ##')
-    # evaluate_f0(n0)
+    pu_0 = WavDataset('../data/eva_out_pulse0115_fff0').without_str('-').without_str('+')
+    pu_1 = WavDataset('../data/eva_out_pulse0115_fff0').include_str('+').replace_key('+1', '')
+    pu_n1 = WavDataset('../data/eva_out_pulse0115_fff0').include_str('-').replace_key('-1', '')
+
+    print('## case : no pulse ##')
+    evaluate_f0(gt, bs_0)
     print('## case : pulse ##')
     evaluate_f0(gt, pu_0)
 
-    # print('## case : no pulse -1 ##')
-    # evaluate_f0(nn1, tone_shift=-1)
+    print('## case : no pulse -1 ##')
+    evaluate_f0(gt, bs_n1, tone_shift=-1)
     print('## case : pulse -1##')
-    evaluate_f0(gt, pu_1, tone_shift=-1)
-    #
-    # print('## case : no pulse +1 ##')
-    # evaluate_f0(np1, tone_shift=+1)
+    evaluate_f0(gt, pu_n1, tone_shift=-1)
+
+    print('## case : no pulse +1 ##')
+    evaluate_f0(gt, bs_1, tone_shift=1)
     print('## case : pulse +1##')
-    evaluate_f0(gt, pu_n1, tone_shift=1)
+    evaluate_f0(gt, pu_1, tone_shift=1)
+
+    # a = [key for key in pu_n1.files.keys()]
+    # a.sort()
+    # print(a)
+    #
+    # a = [key for key in gt.files.keys()]
+    # a.sort()
+    # print(a)
+
+    # for files in common_files(gt, pu_n1):
+    #     print(files)
