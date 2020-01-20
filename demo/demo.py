@@ -69,13 +69,13 @@ if __name__ == '__main__':
 
     # print('## case : no pulse ##')
     # evaluate_f0(n0)
-    # print('## case : pulse ##')
-    # evaluate_f0(p0)
+    print('## case : pulse ##')
+    evaluate_f0(p0)
 
     # print('## case : no pulse -1 ##')
     # evaluate_f0(nn1, tone_shift=-1)
-    # print('## case : pulse -1##')
-    # evaluate_f0(pn1, tone_shift=-1)
+    print('## case : pulse -1##')
+    evaluate_f0(pn1, tone_shift=-1)
     #
     # print('## case : no pulse +1 ##')
     # evaluate_f0(np1, tone_shift=+1)
