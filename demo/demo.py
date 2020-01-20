@@ -5,51 +5,71 @@ from pathlib import Path
 import librosa
 
 
-class EvaDataset:
+class WavDataset:
 
-    def __init__(self, raw_folder, syn_folder):
-        self.r_files = {Path(y).stem: Path(y) for x in os.walk(raw_folder) for y in glob(os.path.join(x[0], '*.wav'))}
-        self.s_files = {Path(y).stem: Path(y) for x in os.walk(syn_folder) for y in glob(os.path.join(x[0], '*.wav'))}
+    def __init__(self, folder):
+        self.files = {Path(y).stem: Path(y) for x in os.walk(folder) for y in glob(os.path.join(x[0], '*.wav'))}
 
-        self.s_files = {file_name: file_path for file_name, file_path in self.s_files.items() if
-                        file_name.find('-') == -1}
-        self.s_files = {file_name: file_path for file_name, file_path in self.s_files.items() if
-                        file_name.find('+') == -1}
+        # filter
+        # self.files = {file_name: file_path for file_name, file_path in self.s_files.items() if
+        #               file_name.find('-') == -1}
+        # self.files = {file_name: file_path for file_name, file_path in self.s_files.items() if
+        #               file_name.find('+') == -1}
 
-        assert len(self.r_files) == len(self.s_files)
-
-        self.file_names = set(self.r_files.keys()).union(set(self.s_files.keys()))
+        # self.file_names = set(self.r_files.keys()).union(set(self.s_files.keys()))
+        self.file_names = set(self.files.keys())
         self.file_names = list(self.file_names)
+
+    def without_str(self, match_string):
+        self.files = {file_name: file_path for file_name, file_path in self.files.items() if
+                      file_name.find(match_string) == -1}
+        return self
+
+    def include_str(self, match_string):
+        self.files = {file_name: file_path for file_name, file_path in self.files.items() if
+                      file_name.find(match_string) != -1}
+        return self
 
     def __len__(self):
         return len(self.file_names)
 
-    def __getitem__(self, idx):
-        file_name = self.file_names[idx]
+    def __getitem__(self, file_name):
+        # file_name = self.file_names[idx]
 
-        r_file = self.r_files[file_name]
-        s_file = self.s_files[file_name]
+        file = self.files[file_name]
 
-        aud_r, sr_r = librosa.load(r_file, sr=None)
-        aud_s, sr_s = librosa.load(s_file, sr=None)
+        # aud_r, sr_r = librosa.load(file, sr=None)
+        aud, sr = librosa.load(file, sr=None)
 
-        assert sr_r == sr_s
+        # assert sr_r == sr_s
 
-        return aud_r, aud_s, sr_r
+        return aud, sr
 
 
-def evaluate_f0(dataset: EvaDataset, tone_shift=0):
+def common_files(a: WavDataset, b: WavDataset):
+    _common_files = set(a.files.keys()).union(set(b.files.keys()))
+    if not (len(a.files) == len(b.files) == len(_common_files)):
+        print("[Warning] these 2 dataset not equal!!")
+    return _common_files
+
+
+def evaluate_f0(source: WavDataset, target: WavDataset, tone_shift=0):
     f0_rmse_list = []
     vuv_precision_list = []
 
-    for aud_r, aud_s, sr in dataset:
-        f0_rmse_mean, vuv_accuracy, vuv_precision = eval_rmse_f0(aud_r, aud_s, sr, method='dio', tone_shift=tone_shift)
+    for file_name in common_files(source, target):
+        aud_s, sr_s = source[file_name]
+        aud_t, sr_t = target[file_name]
+        assert sr_s == sr_t
+
+        f0_rmse_mean, vuv_accuracy, vuv_precision = eval_rmse_f0(aud_s, aud_t, sr_s, method='dio',
+                                                                 tone_shift=tone_shift)
         # print(f0_rmse_mean, vuv_precision)
         f0_rmse_list.append(f0_rmse_mean)
         vuv_precision_list.append(vuv_precision)
 
-    avg_f0_rmse = sum(f0_rmse_list) / len(dataset)
-    avg_vuv_precision = sum(vuv_precision_list) / len(dataset)
+    avg_f0_rmse = sum(f0_rmse_list) / len(common_files(source, target))
+    avg_vuv_precision = sum(vuv_precision_list) / len(common_files(source, target))
 
     print('avg_f0_rmse:', avg_f0_rmse, 'avg_vuv_precision:', avg_vuv_precision)
 
@@ -59,25 +79,26 @@ if __name__ == '__main__':
     r_folder = '../data/ground_truth'
     s_folder_3 = '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1'
 
-    n0 = EvaDataset(r_folder, '../data/repeat1_no_pulse/repeat1_no_pulse')
-    # np1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1-1')
-    # nn1 = EvaDataset(r_folder, '../data/repeat1_no_pulse/semi_tone_shift_repeat1+1')
+    gt = WavDataset(r_folder)
+    bs_0 = WavDataset('../data/repeat1_no_pulse/repeat1_no_pulse')
+    bs_1 = WavDataset('../data/repeat1_no_pulse/semi_tone_shift_repeat1-1')
+    bs_n1 = WavDataset('../data/repeat1_no_pulse/semi_tone_shift_repeat1+1')
 
-    p0 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_01130')
-    pp1 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_01131')
-    pn1 = EvaDataset(r_folder, '../data/out_shifts0113/repeat2_7layer_0113-1')
+    pu_0 = WavDataset('../data/out_shifts0113/repeat2_7layer_01130').without_str('-').without_str('+')
+    pu_1 = WavDataset('../data/out_shifts0113/repeat2_7layer_01131').without_str('-').without_str('+')
+    pu_n1 = WavDataset('../data/out_shifts0113/repeat2_7layer_0113-1').without_str('-').without_str('+')
 
     # print('## case : no pulse ##')
     # evaluate_f0(n0)
     print('## case : pulse ##')
-    evaluate_f0(p0)
+    evaluate_f0(gt, pu_0)
 
     # print('## case : no pulse -1 ##')
     # evaluate_f0(nn1, tone_shift=-1)
     print('## case : pulse -1##')
-    evaluate_f0(pn1, tone_shift=-1)
+    evaluate_f0(gt, pu_1, tone_shift=-1)
     #
     # print('## case : no pulse +1 ##')
     # evaluate_f0(np1, tone_shift=+1)
     print('## case : pulse +1##')
-    evaluate_f0(pp1, tone_shift=1)
+    evaluate_f0(gt, pu_n1, tone_shift=1)

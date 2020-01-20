@@ -18,3 +18,11 @@ avg_f0_rmse: 78.75798293346492 avg_vuv_precision: 0.8755198915077944
 avg_f0_rmse: 105.74415995569369 avg_vuv_precision: 0.8687129824805554
 ## case : pulse +1##
 avg_f0_rmse: 139.0309884529283 avg_vuv_precision: 0.871002959596062
+
+0113
+## case : pulse ##
+avg_f0_rmse: 78.75798293346492 avg_vuv_precision: 0.875519891507794
+## case : pulse -1##
+avg_f0_rmse: 104.8634401609867 avg_vuv_precision: 0.8710029595960624
+## case : pulse +1##
+avg_f0_rmse: 139.71226351722754 avg_vuv_precision: 0.8687129824805554
